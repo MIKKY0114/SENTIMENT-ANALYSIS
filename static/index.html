@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUSTOMER FEEDBACK ANALYSIS</title>
+    <style>
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #f4f4f9;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            resize: none;
+        }
+
+        #submitbutton {
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #submitbutton:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #e9f7fe;
+            color: #333;
+            font-size: 1.1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CUSTOMER FEEDBACK ANALYSIS</h1>
+        <label for="textInput">ENTER YOUR VALUABLE FEEDBACK</label><br>
+        <textarea id="textInput" rows="4" cols="50"></textarea><br>
+        <button id="submitbutton">SUBMIT</button>
+        <div class="output" id="outputContainer" style="display: block;"></div>
+    </div>
+    <script>
+        document.getElementById("submitbutton").onclick = async function() {
+            const textInput = document.getElementById("textInput").value;
+
+            try{
+                const response = await fetch("http://172.16.51.223/feedback/predict", {
+                    method: "POST",
+                    headers: {
+                         "content-type": "application/json"
+                    },
+                    body: JSON.stringify({text: textInput}),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Network Error");
+                }
+
+                const data = await response.json();
+                const outputContainer = document.getElementById("outputContainer");
+
+                outputContainer.innerHTML = `<strong>Feedback:</strong> ${data.Feedback}`;
+                outputContainer.style.display = 'block';
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        };
+    </script>
+</body>
+</html>
